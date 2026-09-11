@@ -1,0 +1,22 @@
+{
+  "name": "inventory-ops",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @inventory-ops/api & npm run dev -w @inventory-ops/web",
+    "dev:api": "npm run dev -w @inventory-ops/api",
+    "dev:web": "npm run dev -w @inventory-ops/web",
+    "build": "npm run build -w @inventory-ops/shared && npm run build -w @inventory-ops/api && npm run build -w @inventory-ops/web",
+    "db:generate": "npm run prisma:generate -w @inventory-ops/api",
+    "db:migrate": "npm run prisma:migrate -w @inventory-ops/api",
+    "db:seed": "npm run prisma:seed -w @inventory-ops/api",
+    "db:push": "npm run prisma:push -w @inventory-ops/api"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

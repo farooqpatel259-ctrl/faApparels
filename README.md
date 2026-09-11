@@ -1,0 +1,43 @@
+# Inventory Ops
+
+Transaction-based Inventory, Warehouse, Production, Sorting & Order Management System.
+
+## Stack
+
+- **API:** NestJS + Prisma + SQLite (local) / PostgreSQL (production)
+- **Web:** Next.js 15 App Router
+- **Shared:** `@inventory-ops/shared` enums & permission codes
+
+> Local default is SQLite (`apps/api/prisma/dev.db`) because Docker/Postgres is optional. Switch `DATABASE_URL` back to PostgreSQL and restore `@db.Decimal` when deploying.
+
+## Quick start
+
+```bash
+cd inventory-ops
+npm install
+npm run build -w @inventory-ops/shared
+npm run prisma:generate -w @inventory-ops/api
+npm run prisma:push -w @inventory-ops/api
+npm run prisma:seed -w @inventory-ops/api
+npm run dev:api
+npm run dev:web
+```
+
+- Web: http://localhost:3000  
+- API: http://localhost:4000/api/v1/health  
+
+**Login:** `admin@inventory.local` / `Admin123!`
+
+## What's working now
+
+- Auth + RBAC (JWT, granular permissions)
+- Articles, categories, units
+- Warehouses & location hierarchy
+- Inventory engine (receive / adjust / reserve / release) with ledger + audit
+- Suppliers, purchase orders, receiving → putaway to AVAILABLE
+- Dashboard KPIs from live balances
+- Operational UI shell with remaining modules stubbed
+
+## Architecture docs
+
+See [`docs/architecture/`](docs/architecture/).
