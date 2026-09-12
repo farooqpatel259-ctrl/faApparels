@@ -14,6 +14,7 @@ interface ArticleRow {
   sku: string;
   name: string;
   categoryName: string;
+  color: string;
   unitCode: string;
   minStock: string;
   reorderLevel: string;
@@ -60,6 +61,7 @@ export default function ArticlesPage() {
           id: string;
           sku: string;
           name: string;
+          color?: string | null;
           isActive: boolean;
           minStock: string | number;
           reorderLevel: string | number;
@@ -75,6 +77,7 @@ export default function ArticlesPage() {
           sku: a.sku,
           name: a.name,
           categoryName: a.category?.name ?? "—",
+          color: a.color?.trim() ? a.color : "—",
           unitCode: a.unit?.code ?? "—",
           minStock: String(a.minStock ?? 0),
           reorderLevel: String(a.reorderLevel ?? 0),
@@ -202,6 +205,7 @@ export default function ArticlesPage() {
   const columns: Column<ArticleRow>[] = [
     { key: "sku", header: "SKU", mono: true },
     { key: "name", header: "Name" },
+    { key: "color", header: "Color" },
     { key: "categoryName", header: "Category" },
     { key: "unitCode", header: "Unit", mono: true },
     { key: "minStock", header: "Min", mono: true },
@@ -325,7 +329,7 @@ export default function ArticlesPage() {
         loading={loading}
         emptyMessage="No articles yet. Create one or import a CSV."
         searchPlaceholder="Search SKU, name, category…"
-        searchKeys={["sku", "name", "categoryName", "unitCode"]}
+        searchKeys={["sku", "name", "categoryName", "color", "unitCode"]}
         getRowKey={(row) => row.id}
         footer={`${articles.length} article${articles.length === 1 ? "" : "s"}`}
       />

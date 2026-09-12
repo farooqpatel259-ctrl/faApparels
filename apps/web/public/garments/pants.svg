@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" fill="none">
+  <rect width="200" height="240" rx="16" fill="#f4f1ea"/>
+  <path d="M72 55 H128 V85 H118 L128 205 H106 L100 110 L94 205 H72 L82 85 H72 Z" fill="#2f3540"/>
+  <path d="M72 55 H128 V68 H72 Z" fill="#232831"/>
+  <text x="100" y="220" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b645c">PANTS</text>
+</svg>

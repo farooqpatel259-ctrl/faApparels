@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" fill="none">
+  <rect width="200" height="240" rx="16" fill="#f4f1ea"/>
+  <path d="M55 58 L40 78 L58 92 L70 78 V190 H130 V78 L142 92 L160 78 L145 58 C130 48 70 48 55 58Z" fill="#2c333a"/>
+  <path d="M78 58 C90 72 110 72 122 58" stroke="#e8e4dc" stroke-width="4" fill="none"/>
+  <path d="M100 70 V175" stroke="#c9a227" stroke-width="3"/>
+  <circle cx="100" cy="95" r="3.5" fill="#c9a227"/>
+  <circle cx="100" cy="115" r="3.5" fill="#c9a227"/>
+  <circle cx="100" cy="135" r="3.5" fill="#c9a227"/>
+  <circle cx="100" cy="155" r="3.5" fill="#c9a227"/>
+  <text x="100" y="220" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b645c">ZIP HOODIE</text>
+</svg>

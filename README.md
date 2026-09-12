@@ -26,7 +26,7 @@ npm run dev:web
 - Web: http://localhost:3000  
 - API: http://localhost:4000/api/v1/health  
 
-**Login:** `admin@inventory.local` / `Admin123!`
+**Login:** `farooqpatel259` / `farooqpatel2006`
 
 ## What's working now
 

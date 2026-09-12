@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" fill="none">
+  <rect width="200" height="240" rx="16" fill="#f4f1ea"/>
+  <path d="M70 70 H130 V100 H118 L130 180 H108 L100 120 L92 180 H70 L82 100 H70 Z" fill="#4a5d4e"/>
+  <path d="M70 70 H130 V82 H70 Z" fill="#3b4b3f"/>
+  <text x="100" y="220" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b645c">SHORTS</text>
+</svg>

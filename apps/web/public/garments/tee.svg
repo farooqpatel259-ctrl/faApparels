@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" fill="none">
+  <rect width="200" height="240" rx="16" fill="#f4f1ea"/>
+  <path d="M62 78 L48 92 L64 104 L74 90 V178 H126 V90 L136 104 L152 92 L138 78 C126 68 74 68 62 78Z" fill="#8b4a3a"/>
+  <path d="M84 78 C94 88 106 88 116 78" stroke="#f0e6e1" stroke-width="3.5" fill="none"/>
+  <text x="100" y="220" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b645c">TEE</text>
+</svg>

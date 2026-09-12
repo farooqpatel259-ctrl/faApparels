@@ -81,8 +81,15 @@ export function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar__brand">
-        <h2 className="sidebar__brand-title">Inventory Ops</h2>
-        <p className="sidebar__brand-sub">Operations console</p>
+        <img
+          src="/fa-apparels-logo.png"
+          alt="FA Apparels"
+          className="sidebar__brand-logo"
+        />
+        <div>
+          <h2 className="sidebar__brand-title">FA APPARELS</h2>
+          <p className="sidebar__brand-sub">Apparel operations</p>
+        </div>
       </div>
 
       <nav className="sidebar__nav" aria-label="Main navigation">

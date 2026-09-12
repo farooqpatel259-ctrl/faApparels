@@ -9,7 +9,7 @@ const API_URL =
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@inventory.local");
+  const [email, setEmail] = useState("farooqpatel259");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -61,10 +61,15 @@ export default function LoginPage() {
   return (
     <div className="login-page">
       <section className="login-hero">
-        <h1>Inventory Ops</h1>
+        <img
+          src="/fa-apparels-logo.png"
+          alt="FA Apparels"
+          className="login-hero__logo"
+        />
+        <h1>FA APPARELS</h1>
         <p>
-          Transaction-based inventory, purchasing, production, sorting, and
-          warehouse operations — with a full audit ledger.
+          Apparel inventory, purchasing, production, sorting, and warehouse
+          operations — with a full audit ledger.
         </p>
         <div className="login-hero__meta">
           <span>Balances + ledger</span>
@@ -76,19 +81,24 @@ export default function LoginPage() {
       <section className="login-side">
         <div className="login-panel">
           <div className="login-panel__brand">
+            <img
+              src="/fa-apparels-logo.png"
+              alt="FA Apparels"
+              className="login-panel__logo"
+            />
             <h1>Sign in</h1>
-            <p>Access the operations console</p>
+            <p>Access FA Apparels operations</p>
           </div>
 
           {error && <div className="form-error">{error}</div>}
 
           <form onSubmit={handleSubmit}>
             <div className="form-field" style={{ marginBottom: 16 }}>
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">Login ID</label>
               <input
                 id="email"
-                type="email"
-                autoComplete="email"
+                type="text"
+                autoComplete="username"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -118,7 +128,7 @@ export default function LoginPage() {
           </form>
 
           <div className="login-hint">
-            Seeded admin: admin@inventory.local / Admin123!
+            Admin: farooqpatel259 / farooqpatel2006
           </div>
         </div>
       </section>

@@ -29,7 +29,16 @@ export class InventoryService {
         take: pageSize,
         orderBy: { updatedAt: 'desc' },
         include: {
-          article: { select: { id: true, sku: true, name: true } },
+          article: {
+            select: {
+              id: true,
+              sku: true,
+              name: true,
+              color: true,
+              sellingPrice: true,
+              costPrice: true,
+            },
+          },
           variant: { select: { id: true, sku: true } },
           warehouse: { select: { id: true, code: true, name: true } },
           location: { select: { id: true, code: true, name: true } },
@@ -66,7 +75,7 @@ export class InventoryService {
         take: pageSize,
         orderBy: { createdAt: 'desc' },
         include: {
-          article: { select: { id: true, sku: true, name: true } },
+          article: { select: { id: true, sku: true, name: true, color: true } },
           variant: { select: { id: true, sku: true } },
           warehouse: { select: { id: true, code: true, name: true } },
           location: { select: { id: true, code: true, name: true } },

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" fill="none">
+  <rect width="200" height="240" rx="16" fill="#f4f1ea"/>
+  <path d="M55 58 L40 78 L58 92 L70 78 V190 H130 V78 L142 92 L160 78 L145 58 C130 48 70 48 55 58Z" fill="#3d4f5f"/>
+  <path d="M78 58 C90 72 110 72 122 58" stroke="#d7dde3" stroke-width="4" fill="none"/>
+  <path d="M85 110 H115 V145 H85 Z" fill="#2f3d4a"/>
+  <text x="100" y="220" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b645c">HOODIE</text>
+</svg>

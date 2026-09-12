@@ -1,10 +1,8 @@
-import { IsString, Matches, MinLength } from 'class-validator';
+import { IsString, MinLength } from 'class-validator';
 
 export class LoginDto {
   @IsString()
-  @Matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
-    message: 'email must be a valid email address',
-  })
+  @MinLength(3)
   email!: string;
 
   @IsString()

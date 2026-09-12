@@ -17,7 +17,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Inventory Ops",
+  title: "FA APPARELS",
   description: "Inventory operations management platform",
 };
 

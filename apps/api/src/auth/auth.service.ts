@@ -19,8 +19,16 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginDto) {
+    const loginId = dto.email.trim().toLowerCase();
     const user = await this.prisma.user.findFirst({
-      where: { email: dto.email, deletedAt: null, isActive: true },
+      where: {
+        deletedAt: null,
+        isActive: true,
+        OR: [
+          { email: loginId },
+          { email: { equals: dto.email.trim() } },
+        ],
+      },
       include: {
         userRoles: {
           include: {
