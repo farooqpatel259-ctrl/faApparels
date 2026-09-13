@@ -87,7 +87,7 @@ export default function StockAdjustmentsPage() {
   const [status, setStatus] = useState("AVAILABLE");
   const [direction, setDirection] = useState<"increase" | "decrease">("increase");
   const [quantity, setQuantity] = useState("1");
-  const [reason, setReason] = useState(REASONS[0].value);
+  const [reason, setReason] = useState<string>(REASONS[0].value);
   const [notes, setNotes] = useState("");
 
   async function loadAll() {

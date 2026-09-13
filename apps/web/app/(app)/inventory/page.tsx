@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { PageHeader } from "@/components/PageHeader";
 import { SectionIntro } from "@/components/SectionIntro";
@@ -35,25 +35,231 @@ interface GarmentCard {
 }
 
 const GARMENT_IMAGES: Record<string, string> = {
-  ZIP: "/garments/zipper-hoodie.svg",
-  HDY: "/garments/hoodie.svg",
-  CRW: "/garments/crewneck.svg",
-  TEE: "/garments/tee.svg",
-  SHT: "/garments/shorts.svg",
-  PNT: "/garments/pants.svg",
+  ZIP: "/garments/zipper-hoodie.png?v=2",
+  HDY: "/garments/hoodie.png?v=2",
+  CRW: "/garments/crewneck.png?v=2",
+  TEE: "/garments/tee.png?v=2",
+  SHT: "/garments/shorts.png?v=2",
+  PNT: "/garments/pants.png?v=2",
+};
+
+const COLOR_HEX: Record<string, string> = {
+  Black: "#1a1a1a",
+  White: "#f3f3f3",
+  Navy: "#1b2a4a",
+  Grey: "#8a8a8a",
+  Olive: "#556b2f",
+  Red: "#b91c1c",
+  Beige: "#d4c4a8",
+  Khaki: "#c3b091",
+  Charcoal: "#36454f",
+  Forest: "#1f4d3a",
+  Sand: "#c2b280",
+  Burgundy: "#6b1e2a",
 };
 
 function garmentImageForSku(sku: string): string {
   const prefix = sku.split("-")[0];
-  return GARMENT_IMAGES[prefix] ?? "/garments/tee.svg";
+  return GARMENT_IMAGES[prefix] ?? "/garments/tee.png?v=2";
+}
+
+function colorHex(color: string): string {
+  return COLOR_HEX[color] ?? "#9ca3af";
+}
+
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  return [
+    parseInt(h.slice(0, 2), 16),
+    parseInt(h.slice(2, 4), 16),
+    parseInt(h.slice(4, 6), 16),
+  ];
 }
 
 function formatMoney(n: number): string {
-  return new Intl.NumberFormat("en-PK", {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "PKR",
-    maximumFractionDigits: 0,
+    currency: "USD",
+    maximumFractionDigits: 2,
   }).format(n);
+}
+
+function GarmentPhoto({
+  src,
+  color,
+  alt,
+  className = "",
+}: {
+  src: string;
+  color: string;
+  alt: string;
+  className?: string;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const img = new Image();
+    let cancelled = false;
+
+    img.onload = () => {
+      if (cancelled) return;
+
+      // Work at a capped size so recolor stays sharp and fast
+      const maxW = 480;
+      const scale = Math.min(1, maxW / (img.naturalWidth || img.width || maxW));
+      const width = Math.max(1, Math.round((img.naturalWidth || img.width) * scale));
+      const height = Math.max(1, Math.round((img.naturalHeight || img.height) * scale));
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      if (!ctx) return;
+
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const d = imageData.data;
+      const [tr, tg, tb] = hexToRgb(colorHex(color));
+      const isWhite = color === "White";
+      const total = width * height;
+      const bg = new Uint8Array(total);
+
+      const lumAt = (i: number) => {
+        const o = i * 4;
+        return 0.2126 * d[o] + 0.7152 * d[o + 1] + 0.0722 * d[o + 2];
+      };
+      const satAt = (i: number) => {
+        const o = i * 4;
+        const r = d[o];
+        const g = d[o + 1];
+        const b = d[o + 2];
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        return max === 0 ? 0 : (max - min) / max;
+      };
+      // Only wipe pixels connected to the frame (true studio bg), never fabric speckles
+      const isBgSeed = (i: number) => {
+        const lum = lumAt(i);
+        const sat = satAt(i);
+        return lum >= 198 && sat < 0.28;
+      };
+
+      const queue = new Int32Array(total);
+      let qh = 0;
+      let qt = 0;
+      const push = (i: number) => {
+        if (bg[i]) return;
+        if (!isBgSeed(i)) return;
+        bg[i] = 1;
+        queue[qt++] = i;
+      };
+
+      for (let x = 0; x < width; x++) {
+        push(x);
+        push((height - 1) * width + x);
+      }
+      for (let y = 0; y < height; y++) {
+        push(y * width);
+        push(y * width + width - 1);
+      }
+
+      while (qh < qt) {
+        const i = queue[qh++];
+        const x = i % width;
+        const y = (i / width) | 0;
+        if (x > 0) push(i - 1);
+        if (x + 1 < width) push(i + 1);
+        if (y > 0) push(i - width);
+        if (y + 1 < height) push(i + width);
+      }
+
+      // Soften the garment/background edge once (removes colored fringe)
+      const edge = new Uint8Array(total);
+      for (let i = 0; i < total; i++) {
+        if (bg[i]) continue;
+        const x = i % width;
+        const y = (i / width) | 0;
+        const nearBg =
+          (x > 0 && bg[i - 1]) ||
+          (x + 1 < width && bg[i + 1]) ||
+          (y > 0 && bg[i - width]) ||
+          (y + 1 < height && bg[i + width]);
+        if (nearBg && lumAt(i) > 170) edge[i] = 1;
+      }
+      for (let i = 0; i < total; i++) {
+        if (edge[i]) bg[i] = 1;
+      }
+
+      for (let i = 0; i < total; i++) {
+        const o = i * 4;
+        if (bg[i]) {
+          d[o] = 255;
+          d[o + 1] = 255;
+          d[o + 2] = 255;
+          d[o + 3] = 255;
+          continue;
+        }
+
+        const lum = lumAt(i);
+        // Keep fabric texture continuous (no white holes inside the garment)
+        const shade = Math.max(0.18, Math.min(0.98, lum / 255));
+
+        if (isWhite) {
+          const v = Math.round(215 + shade * 40);
+          d[o] = v;
+          d[o + 1] = v;
+          d[o + 2] = v;
+          continue;
+        }
+
+        d[o] = Math.round(tr * shade);
+        d[o + 1] = Math.round(tg * shade);
+        d[o + 2] = Math.round(tb * shade);
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+    };
+
+    img.onerror = () => {
+      if (cancelled) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      canvas.width = 300;
+      canvas.height = 400;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, 300, 400);
+    };
+
+    img.src = src;
+    return () => {
+      cancelled = true;
+    };
+  }, [src, color]);
+
+  return (
+    <div className={`garment-media ${className}`.trim()}>
+      <canvas ref={canvasRef} className="garment-media__img" role="img" aria-label={alt} />
+    </div>
+  );
+}
+
+function ColorSwatch({ color }: { color: string }) {
+  if (!color || color === "—") return <span>{color || "—"}</span>;
+  return (
+    <span className="garment-card__color">
+      <span
+        className="garment-card__swatch"
+        style={{ background: colorHex(color) }}
+        aria-hidden
+      />
+      {color}
+    </span>
+  );
 }
 
 export default function InventoryBalancesPage() {
@@ -194,8 +400,9 @@ export default function InventoryBalancesPage() {
       header: "Pic",
       render: (row) =>
         /^(ZIP|HDY|CRW|TEE|SHT|PNT)-/.test(row.sku) ? (
-          <img
+          <GarmentPhoto
             src={row.imageUrl}
+            color={row.color}
             alt={row.articleName}
             className="garment-thumb"
           />
@@ -205,7 +412,11 @@ export default function InventoryBalancesPage() {
     },
     { key: "sku", header: "SKU", mono: true },
     { key: "articleName", header: "Article" },
-    { key: "color", header: "Color" },
+    {
+      key: "color",
+      header: "Color",
+      render: (row) => <ColorSwatch color={row.color} />,
+    },
     {
       key: "sellingPrice",
       header: "Price",
@@ -312,11 +523,16 @@ export default function InventoryBalancesPage() {
           <div className="garment-grid">
             {garments.map((g) => (
               <article key={g.sku} className="garment-card">
-                <img src={g.imageUrl} alt={g.name} className="garment-card__img" />
+                <GarmentPhoto
+                  src={g.imageUrl}
+                  color={g.color}
+                  alt={`${g.name} — ${g.color}`}
+                  className="garment-card__media"
+                />
                 <div className="garment-card__body">
                   <div className="garment-card__sku">{g.sku}</div>
                   <h4 className="garment-card__name">{g.name}</h4>
-                  <div className="garment-card__color">Color: {g.color}</div>
+                  <ColorSwatch color={g.color} />
                   <div className="garment-card__price">{formatMoney(g.sellingPrice)}</div>
                   <div className="garment-card__stock">
                     Available {g.availableQty}

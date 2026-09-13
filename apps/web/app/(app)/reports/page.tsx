@@ -92,10 +92,10 @@ function formatNumber(n: number): string {
 }
 
 function formatMoney(n: number): string {
-  return new Intl.NumberFormat("en-PK", {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "PKR",
-    maximumFractionDigits: 0,
+    currency: "USD",
+    maximumFractionDigits: 2,
   }).format(n);
 }
 

@@ -5,6 +5,11 @@ import { api, ApiError } from "@/lib/api";
 import { PageHeader } from "@/components/PageHeader";
 import { SectionIntro } from "@/components/SectionIntro";
 import { DataTable, Column } from "@/components/DataTable";
+import {
+  DEFAULT_MOBILE_API_URL,
+  getApiBaseUrl,
+  setStoredApiUrl,
+} from "@/lib/config";
 
 interface SettingRow {
   id: string;
@@ -92,6 +97,25 @@ export default function SettingsPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [apiUrl, setApiUrl] = useState(DEFAULT_MOBILE_API_URL);
+  const [apiSaved, setApiSaved] = useState<string | null>(null);
+
+  useEffect(() => {
+    setApiUrl(getApiBaseUrl());
+  }, []);
+
+  function saveApiUrl(e: FormEvent) {
+    e.preventDefault();
+    let value = apiUrl.trim();
+    if (!/^https?:\/\//i.test(value)) value = `http://${value}`;
+    value = value.replace(/\/$/, "");
+    if (!value.endsWith("/api/v1")) {
+      value = value.replace(/\/$/, "") + (value.includes(":4000") ? "/api/v1" : ":4000/api/v1");
+    }
+    setStoredApiUrl(value);
+    setApiUrl(value);
+    setApiSaved("Server address saved. Sign out and sign in again if login fails.");
+  }
 
   async function load() {
     setLoading(true);
@@ -194,6 +218,28 @@ export default function SettingsPage() {
 
       {error && <div className="alert alert--error">{error}</div>}
       {success && <div className="alert alert--success">{success}</div>}
+      {apiSaved && <div className="alert alert--success">{apiSaved}</div>}
+
+      <form className="form-panel" onSubmit={saveApiUrl} style={{ marginBottom: 16 }}>
+        <h3 className="form-panel__title">Mobile / API server</h3>
+        <p style={{ fontSize: 13, color: "var(--color-text-muted)", marginTop: 0 }}>
+          The app UI runs on your phone. Stock data still comes from the FA Apparels API
+          on your computer (same Wi‑Fi). Example:{" "}
+          <code>{DEFAULT_MOBILE_API_URL}</code>
+        </p>
+        <div className="form-field">
+          <label htmlFor="apiUrl">API server URL</label>
+          <input
+            id="apiUrl"
+            value={apiUrl}
+            onChange={(e) => setApiUrl(e.target.value)}
+            placeholder={DEFAULT_MOBILE_API_URL}
+          />
+        </div>
+        <button type="submit" className="btn btn-primary">
+          Save server address
+        </button>
+      </form>
 
       <form onSubmit={handleSave}>
         {editableGroups.map(([group, rows]) => (

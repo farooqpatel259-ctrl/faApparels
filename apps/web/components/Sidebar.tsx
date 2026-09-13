@@ -60,7 +60,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
   );
 }
 
-export function Sidebar() {
+export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const [userName, setUserName] = useState("Operator");
   const [userEmail, setUserEmail] = useState("");
 
@@ -92,7 +92,7 @@ export function Sidebar() {
         </div>
       </div>
 
-      <nav className="sidebar__nav" aria-label="Main navigation">
+      <nav className="sidebar__nav" aria-label="Main navigation" onClick={onNavigate}>
         {NAV_ITEMS.map((item) => (
           <div key={item.label} className="sidebar__section">
             {item.children ? (

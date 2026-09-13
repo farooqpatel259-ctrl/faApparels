@@ -1,7 +1,5 @@
 import { getToken, clearToken } from "./auth";
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
+import { getApiBaseUrl } from "./config";
 
 export class ApiError extends Error {
   constructor(
@@ -35,8 +33,9 @@ interface RequestOptions extends Omit<RequestInit, "body"> {
 }
 
 function buildUrl(path: string, params?: RequestOptions["params"]): string {
+  const base = getApiBaseUrl();
   const url = new URL(
-    path.startsWith("http") ? path : `${BASE_URL}${path.startsWith("/") ? path : `/${path}`}`,
+    path.startsWith("http") ? path : `${base}${path.startsWith("/") ? path : `/${path}`}`,
   );
 
   if (params) {
@@ -101,5 +100,3 @@ export async function api<T>(
 
   return { data: payload!.data, meta: payload!.meta };
 }
-
-export { BASE_URL };
