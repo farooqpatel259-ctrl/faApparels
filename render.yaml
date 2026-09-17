@@ -1,8 +1,6 @@
-# Exported from Render Blueprint
-# https://render.com/docs/blueprint-spec
-#
-# After connecting this repo in Render Dashboard → New → Blueprint,
-# Render creates Postgres + API + Static Web from this file.
+# Render Blueprint for FA Apparels
+# Dashboard → New → Blueprint → select this repo (branch: main)
+# Docs: https://render.com/docs/blueprint-spec
 
 databases:
   - name: faapparels-db
@@ -14,7 +12,8 @@ services:
     runtime: node
     plan: free
     region: oregon
-    rootDir: .
+    branch: main
+    autoDeploy: true
     buildCommand: npm install && npm run build:api
     startCommand: npm run start:api:prod
     healthCheckPath: /api/v1/health
@@ -37,13 +36,21 @@ services:
     runtime: static
     plan: free
     region: oregon
-    rootDir: .
+    branch: main
+    autoDeploy: true
     buildCommand: npm install && npm run build:web
     staticPublishPath: apps/web/out
+    routes:
+      # Next export uses trailingSlash folders; keep deep links working
+      - type: rewrite
+        source: /login
+        destination: /login/
+      - type: rewrite
+        source: /inventory
+        destination: /inventory/
     envVars:
       - key: NODE_VERSION
         value: "20"
       - key: NEXT_PUBLIC_API_URL
-        # After first API deploy, set this to https://faapparels-api.onrender.com/api/v1
-        # then Manual Deploy the web service again.
-        sync: false
+        # Must match your live API hostname after deploy
+        value: https://faapparels-api.onrender.com/api/v1
