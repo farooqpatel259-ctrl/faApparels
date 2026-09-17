@@ -18,7 +18,11 @@ import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      // Works locally (apps/api/.env) and on Render (dashboard env vars)
+      envFilePath: ['.env', '../../.env'],
+    }),
     PrismaModule,
     AuthModule,
     UsersModule,

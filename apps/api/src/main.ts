@@ -20,8 +20,8 @@ async function bootstrap() {
   );
 
   const config = app.get(ConfigService);
-  const port = config.get<number>('PORT', 4000);
-  await app.listen(port, '0.0.0.0');
+  const port = Number(config.get<string | number>('PORT') ?? 4000);
+  await app.listen(Number.isFinite(port) ? port : 4000, '0.0.0.0');
   console.log(`API listening on http://0.0.0.0:${port}/api/v1`);
 }
 

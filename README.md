@@ -10,6 +10,8 @@ Transaction-based Inventory, Warehouse, Production, Sorting & Order Management S
 
 > Production / Render uses PostgreSQL. Set `DATABASE_URL` to your Postgres connection string (see `apps/api/.env.example`).
 
+**Deploy to Render:** see [`DEPLOY.md`](DEPLOY.md) (Blueprint `render.yaml` included).
+
 ## Quick start
 
 ```bash

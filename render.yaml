@@ -1,0 +1,49 @@
+# Exported from Render Blueprint
+# https://render.com/docs/blueprint-spec
+#
+# After connecting this repo in Render Dashboard → New → Blueprint,
+# Render creates Postgres + API + Static Web from this file.
+
+databases:
+  - name: faapparels-db
+    plan: free
+
+services:
+  - type: web
+    name: faapparels-api
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: .
+    buildCommand: npm install && npm run build:api
+    startCommand: npm run start:api:prod
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: DATABASE_URL
+        fromDatabase:
+          name: faapparels-db
+          property: connectionString
+
+  - type: web
+    name: faapparels-web
+    runtime: static
+    plan: free
+    region: oregon
+    rootDir: .
+    buildCommand: npm install && npm run build:web
+    staticPublishPath: apps/web/out
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NEXT_PUBLIC_API_URL
+        # After first API deploy, set this to https://faapparels-api.onrender.com/api/v1
+        # then Manual Deploy the web service again.
+        sync: false
