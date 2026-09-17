@@ -4,11 +4,11 @@ Transaction-based Inventory, Warehouse, Production, Sorting & Order Management S
 
 ## Stack
 
-- **API:** NestJS + Prisma + SQLite (local) / PostgreSQL (production)
-- **Web:** Next.js 15 App Router
+- **API:** NestJS + Prisma + PostgreSQL
+- **Web:** Next.js 15 App Router (static export for Render / APK)
 - **Shared:** `@inventory-ops/shared` enums & permission codes
 
-> Local default is SQLite (`apps/api/prisma/dev.db`) because Docker/Postgres is optional. Switch `DATABASE_URL` back to PostgreSQL and restore `@db.Decimal` when deploying.
+> Production / Render uses PostgreSQL. Set `DATABASE_URL` to your Postgres connection string (see `apps/api/.env.example`).
 
 ## Quick start
 
